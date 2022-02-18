@@ -126,13 +126,9 @@ async function startAddingMoustaches(model, domElem, ctx) {
 
 document.addEventListener("DOMContentLoaded", async function () {
   const startButton = document.getElementById("startButton");
-  startButton.disabled = true;
   const stopButton = document.getElementById("stopButton");
-  stopButton.disabled = true;
-  const moustacheButton = document.getElementById("moustacheButton");
-  moustacheButton.style.visibility = "hidden";
+  const moustacheIcon = document.getElementById("moustacheIcon");
   const moustacheLabel = document.getElementById("moustacheLabel");
-  moustacheLabel.style.visibility = "hidden";
   // Load the model.
   const model = await blazeface.load();
   const domElem = await loadCamera();
@@ -153,21 +149,28 @@ document.addEventListener("DOMContentLoaded", async function () {
     MoustacheMakerApp.isRunning = false;
     cancelAnimationFrame(MoustacheMakerApp.animationFrameID);
   });
-  moustacheButton.addEventListener("change", () => {
+  document.getElementById("clearButton").addEventListener("click", () => {
+    clearMoustaches(ctx);
+  });
+  moustacheIcon.addEventListener("click", () => {
     if (MoustacheMakerApp.isRunning) {
       MoustacheMakerApp.isRunning = false;
       cancelAnimationFrame(MoustacheMakerApp.animationFrameID);
-      moustacheButton.checked = false;
       clearMoustaches(ctx);
+      moustacheIcon.style.width = "30px";
+      moustacheIcon.style.height = "30px";
+      moustacheLabel.innerText = "<-- Press this to get moustaches";
     } else {
       MoustacheMakerApp.isRunning = true;
       startAddingMoustaches(model, domElem, ctx);
-      moustacheButton.checked = true;
+      moustacheIcon.style.width = "60px";
+      moustacheIcon.style.height = "60px";
+      moustacheLabel.innerText = "Drawing moustaches now!";
     }
   });
   domElem.play();
   startButton.disabled = false;
   stopButton.disabled = false;
-  moustacheButton.style.visibility = "visible";
-  moustacheLabel.style.visibility = "visible";
+  clearButton.disabled = false;
+  moustacheIcon.style.visibility = "visible";
 });
