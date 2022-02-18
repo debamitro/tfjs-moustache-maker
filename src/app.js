@@ -27,7 +27,11 @@ async function loadCamera() {
   });
 }
 
-async function startCapturing(model, domElem, ctx) {
+function clearMoustaches(ctx) {
+  ctx.clearRect(0, 0, MoustacheMakerApp.width, MoustacheMakerApp.height);
+}
+
+async function startAddingMoustaches(model, domElem, ctx) {
   if (!MoustacheMakerApp.isRunning) {
     return;
   }
@@ -38,7 +42,7 @@ async function startCapturing(model, domElem, ctx) {
   const predictions = await model.estimateFaces(domElem, returnTensors);
 
   if (predictions.length > 0) {
-    ctx.clearRect(0, 0, MoustacheMakerApp.width, MoustacheMakerApp.height);
+    clearMoustaches(ctx);
     /*
           `predictions` is an array of objects describing each detected face, for example:
 
@@ -113,11 +117,19 @@ async function startCapturing(model, domElem, ctx) {
   }
 
   MoustacheMakerApp.animationFrameID = requestAnimationFrame((timestamp) => {
-    startCapturing(model, domElem, ctx);
+    startAddingMoustaches(model, domElem, ctx);
   });
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
+  const startButton = document.getElementById("startButton");
+  startButton.disabled = true;
+  const stopButton = document.getElementById("stopButton");
+  stopButton.disabled = true;
+  const moustacheButton = document.getElementById("moustacheButton");
+  moustacheButton.style.visibility = "hidden";
+  const moustacheLabel = document.getElementById("moustacheLabel");
+  moustacheLabel.style.visibility = "hidden";
   // Load the model.
   const model = await blazeface.load();
   const domElem = await loadCamera();
@@ -130,14 +142,29 @@ document.addEventListener("DOMContentLoaded", async function () {
   const ctx = theCanvas.getContext("2d");
   ctx.fillStyle = "black";
 
-  document.getElementById("startButton").addEventListener("click", () => {
+  startButton.addEventListener("click", () => {
     domElem.play();
-    MoustacheMakerApp.isRunning = true;
-    startCapturing(model, domElem, ctx);
   });
-  document.getElementById("stopButton").addEventListener("click", () => {
+  stopButton.addEventListener("click", () => {
     domElem.pause();
     MoustacheMakerApp.isRunning = false;
     cancelAnimationFrame(MoustacheMakerApp.animationFrameID);
   });
+  moustacheButton.addEventListener("change", () => {
+    if (MoustacheMakerApp.isRunning) {
+      MoustacheMakerApp.isRunning = false;
+      cancelAnimationFrame(MoustacheMakerApp.animationFrameID);
+      moustacheButton.checked = false;
+      clearMoustaches(ctx);
+    } else {
+      MoustacheMakerApp.isRunning = true;
+      startAddingMoustaches(model, domElem, ctx);
+      moustacheButton.checked = true;
+    }
+  });
+  domElem.play();
+  startButton.disabled = false;
+  stopButton.disabled = false;
+  moustacheButton.style.visibility = "visible";
+  moustacheLabel.style.visibility = "visible";
 });
