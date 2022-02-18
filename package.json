@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "description": "Some fun with Tensorflow JS",
   "scripts": {
-    "build": "parcel build src/index.html"
+      "build": "parcel build src/index.html",
+      "format": "prettier --write src/app.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,7 @@
     "@tensorflow-models/blazeface": "^0.0.7"
   },
   "devDependencies": {
-    "parcel": "^2.3.1"
+    "parcel": "^2.3.1",
+    "prettier": "^2.5.1"
   }
 }

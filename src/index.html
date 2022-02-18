@@ -4,6 +4,29 @@
     <title>Moustache Maker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
   </head>
+  <style>
+    #theApp {
+        position: relative;
+    }
+    #theCanvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+  </style>
   <body>
+    <div id="theApp">
+      <video id="theVideo">
+      </video>
+      <canvas id="theCanvas">
+      </canvas>
+      <div>
+          <button id="startButton">start</button>
+          <button id="stopButton">stop</button>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+    <script type="module" src="app.js"></script>
   </body>
 </html>
