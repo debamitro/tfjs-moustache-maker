@@ -1,0 +1,24 @@
+{
+  "name": "tfjs-moustache-maker",
+  "version": "0.0.1",
+  "description": "Some fun with Tensorflow JS",
+  "scripts": {
+    "build": "parcel build src/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/debamitro/tfjs-moustache-maker.git"
+  },
+  "author": "Debamitro Chakraborti",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/debamitro/tfjs-moustache-maker/issues"
+  },
+  "homepage": "https://github.com/debamitro/tfjs-moustache-maker#readme",
+  "dependencies": {
+    "@tensorflow-models/blazeface": "^0.0.7"
+  },
+  "devDependencies": {
+    "parcel": "^2.3.1"
+  }
+}
