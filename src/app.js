@@ -9,6 +9,10 @@ const MoustacheMakerApp = {
   videoElem: null,
   animationFrameID: 0,
   isRunning: false,
+  moustache: {
+    width: 60,
+    height: 30,
+  },
 };
 
 async function loadCamera() {
@@ -29,6 +33,43 @@ async function loadCamera() {
 
 function clearMoustaches(ctx) {
   ctx.clearRect(0, 0, MoustacheMakerApp.width, MoustacheMakerApp.height);
+}
+
+function drawMoustache(ctx, nosePos, mouthPos, width, height) {
+  const moustacheCenter = [nosePos[0], nosePos[1] / 4 + (3 * mouthPos[1]) / 4];
+
+  const halfwidth = width / 2;
+  const threefourthwidth = (3 * width) / 4;
+  function drawHalfMoustache(direction) {
+    function addOrSub(startx, offsetx) {
+      if (direction == "left") {
+        return startx - offsetx;
+      }
+      return startx + offsetx;
+    }
+    ctx.beginPath();
+    ctx.moveTo(moustacheCenter[0], moustacheCenter[1]);
+    ctx.bezierCurveTo(
+      addOrSub(moustacheCenter[0], halfwidth),
+      moustacheCenter[1] - height,
+      addOrSub(moustacheCenter[0], threefourthwidth),
+      moustacheCenter[1] + 5,
+      addOrSub(moustacheCenter[0], width),
+      moustacheCenter[1]
+    );
+    ctx.moveTo(moustacheCenter[0], moustacheCenter[1]);
+    ctx.bezierCurveTo(
+      addOrSub(moustacheCenter[0], 5),
+      moustacheCenter[1] + 10,
+      addOrSub(moustacheCenter[0], threefourthwidth),
+      moustacheCenter[1] + 5,
+      addOrSub(moustacheCenter[0], width),
+      moustacheCenter[1]
+    );
+    ctx.fill();
+  }
+  drawHalfMoustache("left");
+  drawHalfMoustache("right");
 }
 
 async function startAddingMoustaches(model, domElem, ctx) {
@@ -67,51 +108,13 @@ async function startAddingMoustaches(model, domElem, ctx) {
       if (predictions[i].landmarks.length > 3) {
         const nosePos = predictions[i].landmarks[2];
         const mouthPos = predictions[i].landmarks[3];
-        const moustacheCenter = [
-          nosePos[0],
-          nosePos[1] / 4 + (3 * mouthPos[1]) / 4,
-        ];
-        ctx.beginPath();
-        ctx.moveTo(moustacheCenter[0], moustacheCenter[1]);
-        ctx.bezierCurveTo(
-          nosePos[0] + 20,
-          nosePos[1] - 20,
-          nosePos[0] + 30,
-          nosePos[1] + 5,
-          moustacheCenter[0] + 40,
-          moustacheCenter[1]
+        drawMoustache(
+          ctx,
+          nosePos,
+          mouthPos,
+          MoustacheMakerApp.moustache.width,
+          MoustacheMakerApp.moustache.height
         );
-        ctx.moveTo(moustacheCenter[0], moustacheCenter[1]);
-        ctx.bezierCurveTo(
-          nosePos[0] + 5,
-          nosePos[1] + 5,
-          nosePos[0] + 30,
-          nosePos[1] + 20,
-          moustacheCenter[0] + 40,
-          moustacheCenter[1]
-        );
-        ctx.fill();
-
-        ctx.beginPath();
-        ctx.moveTo(moustacheCenter[0], moustacheCenter[1]);
-        ctx.bezierCurveTo(
-          nosePos[0] - 20,
-          nosePos[1] - 20,
-          nosePos[0] - 30,
-          nosePos[1] + 5,
-          moustacheCenter[0] - 40,
-          moustacheCenter[1]
-        );
-        ctx.moveTo(moustacheCenter[0], moustacheCenter[1]);
-        ctx.bezierCurveTo(
-          nosePos[0] - 5,
-          nosePos[1] + 5,
-          nosePos[0] - 30,
-          nosePos[1] + 20,
-          moustacheCenter[0] - 40,
-          moustacheCenter[1]
-        );
-        ctx.fill();
       }
     }
   }
